@@ -205,7 +205,7 @@ We don't know in advance the number of objects in the image. Object detection re
 
 ### Two main families:
 
-- Single-Stage: A grid in the image where each cell is a proposal (SSD, YOLO, RetinaNet)
+- Single-Stage: A grid in the image where each cell is a proposal (SSD, YOLO, RetinaNet). Modern versions like YOLOv8/v10 remain highly popular for real-time detection.
 - Two-Stage: Region proposal then classification (Faster-RCNN)
 
 ---
@@ -396,9 +396,9 @@ Law, Hei, and Deng, Jia. "CornerNet: Detecting Objects as Paired Keypoints" ECCV
 ---
 ## Other works
 
-- New approaches try to avoid using anchors
+- Anchor-free and transformer-based detectors have become increasingly popular since 2020
 
-- DeTr uses a Transformer to map a set of features to a set of boxes (with different cardinality)
+- DETR uses a Transformer to map a set of features to a set of boxes (with different cardinality). Follow-up works (Deformable DETR, DINO) have significantly improved speed and accuracy.
 
 .center[
           <img src="images/detr.png" style="width: 650px;" />
