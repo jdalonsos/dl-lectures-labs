@@ -244,6 +244,67 @@ Tokens can be words, characters, or sub-words.
 - Does not capture long-range dependencies between words.
 
 ---
+## N-gram Language Models
+
+A **language model** assigns probabilities to sequences of words. **Goal:** Estimate $P(w\_1, w\_2, \ldots, w\_n)$
+
+--
+
+Using the chain rule:
+$$P(w\_1, \ldots, w\_n) = \prod\_{i=1}^{n} P(w\_i \mid w\_1, \ldots, w\_{i-1})$$
+
+<small>*Example:* $P(\text{the cat sat}) = P(\text{the}) \times P(\text{cat} \mid \text{the}) \times P(\text{sat} \mid \text{the cat})$</small>
+
+--
+
+**N-gram approximation** (Markov assumption): <small>only look at the last $k-1$ words</small>
+$$P(w\_i \mid w\_1, \ldots, w\_{i-1}) \approx P(w\_i \mid w\_{i-k+1}, \ldots, w\_{i-1})$$
+
+- Bigram ($k=2$): $P(w\_i \mid w\_{i-1})$
+- Trigram ($k=3$): $P(w\_i \mid w\_{i-2}, w\_{i-1})$
+
+---
+## Estimating N-gram Probabilities
+
+**Maximum Likelihood Estimation (MLE):**
+
+$$P(w\_i \mid w\_{i-1}) = \frac{C(w\_{i-1}, w\_i)}{C(w\_{i-1})}$$
+
+where $C(\cdot)$ is the count in the training corpus.
+
+--
+
+**Example:** "I love cats. I love dogs."
+- $P(\text{love} \mid \text{I}) = \frac{C(\text{I love})}{C(\text{I})} = \frac{2}{2} = 1$
+- $P(\text{cats} \mid \text{love}) = \frac{1}{2} = 0.5$
+
+--
+
+**The sparsity problem:** Unseen n-grams get $P = 0$!
+
+**Solutions:** Smoothing techniques (Laplace, Kneser-Ney), backoff to lower-order n-grams
+
+---
+## Evaluating Language Models
+
+**Perplexity:** How "surprised" is the model by the test data?
+
+$$\text{PP}(W) = P(w\_1, \ldots, w\_n)^{-1/n} = \sqrt[n]{\frac{1}{P(w\_1, \ldots, w\_n)}}$$
+
+--
+
+- Lower perplexity = better model
+- Perplexity of a fair coin: 2
+- Good language models: perplexity 20-100 on typical text
+
+--
+
+**Limitations of n-gram LMs:**
+- Cannot capture long-range dependencies
+- Vocabulary explosion with large n
+- Motivation for **neural language models**
+
+---
 
 ## Word frequency distribution
 
@@ -320,8 +381,32 @@ array([[0.        , 0.70710678, 0.        , 0.70710678],
        [0.        , 0.        , 0.        , 0.        ]])
 
 >>> vectorizer.get_feature_names_out()
-array(['big', 'brown', 'dog', 'quick'], dtype=object)    
+array(['big', 'brown', 'dog', 'quick'], dtype=object)
 ```
+
+---
+## The Distributional Hypothesis
+
+*"You shall know a word by the company it keeps"* — J.R. Firth (1957)
+
+--
+
+**Core idea:** Words that appear in similar contexts tend to have similar meanings.
+
+--
+
+**Examples:**
+- "cat" and "dog" often appear near "pet", "feed", "furry"
+- "Paris" and "London" appear near "city", "capital", "visit"
+
+--
+
+**Implications:**
+- Word meaning can be captured by co-occurrence statistics
+- Build word-context matrices from large corpora
+- Similar words → similar vector representations
+
+Sets the foundation for **word embeddings** (Word2Vec, GloVe, etc.)
 
 ---
 ## Text classification
@@ -390,6 +475,28 @@ Correct and identify misspelled words in a text.
 .center[
           <img src="images/spell-checker.png" style="width: 500px;" />
 ]
+
+---
+## Edit Distance (Levenshtein Distance)
+
+**Definition:** Minimum number of single-character operations to transform one string into another.
+
+**Operations:** Insertion, Deletion, Substitution (each costs 1)
+
+--
+
+**Example:** "kitten" → "sitting"
+
+| k | i | t | t | e | n |
+|---|---|---|---|---|---|
+| **s** | i | t | t | **i** | n |
+| s | i | t | t | i | n | **g** |
+
+1. k → s (substitution)
+2. e → i (substitution)
+3. insert g
+
+**Edit distance = 3**
 
 ---
 ## Application: auto-suggestion
